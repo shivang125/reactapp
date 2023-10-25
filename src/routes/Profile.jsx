@@ -1,10 +1,10 @@
-import MyAccount from "../../UI/Account/MyAccount/MyAccount";
-import ManageAccount from "../../UI/Account/ManageAccount/ManageAccount";
 import { TabTitle } from "../../../utils/General";
+import ManageAccount from "../../UI/Account/ManageAccount/ManageAccount";
+import MyAccount from "../../UI/Account/MyAccount/MyAccount";
 
 export const Profile = () => {
 
-    TabTitle("My Account - Shema")
+    TabTitle("My Account - Subham")
 
     return ( 
         <MyAccount />
@@ -13,7 +13,7 @@ export const Profile = () => {
 
 export const AccountManager = () => {
 
-    TabTitle("My Account - Shema")
+    TabTitle("My Account - Subham")
 
     return (
         <ManageAccount />

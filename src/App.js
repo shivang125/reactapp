@@ -1,5 +1,8 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import CartItemsProvider from "./Context/CartItemsProvider";
+import SearchProvider from "./Context/SearchProvider";
+import WishItemProvider from "./Context/WishItemsProvider";
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import AddBrand from "./components/Admin/Categories/AddBrand";
 import AddCategory from "./components/Admin/Categories/AddCategory";
@@ -19,23 +22,28 @@ import ManageStocks from "./components/Admin/Products/ManageStocks";
 import UpdateProduct from "./components/Admin/Products/UpdateProduct";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
-import AllCategories from "./components/HomePage/AllCategories";
-import Landing from './components/Landing/Landing';
+import Shop from './components/Shop/Shop';
 import ForgotPasswordPage from "./components/Users/Forms/ForgotPasswordPage";
 import Login from "./components/Users/Forms/Login";
 import RegisterForm from "./components/Users/Forms/RegisterForm";
 import OrderPayment from "./components/Users/Products/OrderPayment";
-import Product from "./components/Users/Products/Product";
 import ProductsFilters from "./components/Users/Products/ProductsFilters";
 import ShoppingCart from "./components/Users/Products/ShoppingCart";
 import CustomerProfile from "./components/Users/Profile/CustomerProfile";
 import AddReview from "./components/Users/Reviews/AddReview";
-
+import Wishlist from "./components/Wishlist/index";
+import CategoryView from "./routes/CategoryView";
+import Home from "./routes/Home";
+import ItemView from "./routes/ItemView";
+import SearchView from "./routes/Search";
 const App = () => {
   return (
     <BrowserRouter>
+      <CartItemsProvider>
+      <WishItemProvider>
+      <SearchProvider>
       <Header />
-      {/* hide navbar if admin */}
+      {/* hide navbarCartItemsProvider if admin */}
       <Routes>
         {/* nested route */}
         <Route path="admin" element={<AdminDashboard />}>
@@ -65,10 +73,25 @@ const App = () => {
         </Route>
         {/* public links */}
         {/* Products */}
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Home />} />
         <Route path="/products-filters" element={<ProductsFilters />} />
-        <Route path="/products/:id" element={<Product />} />
-        <Route path="/all-categories" element={<AllCategories />} />
+        <Route path="/shop" element={<Shop />}/>
+              <Route path="/category">
+                <Route path=":id" element={<CategoryView />}/>
+              </Route>
+              <Route path="/item">
+                <Route path="/item/jewelry">
+                  <Route path=":id" element={<ItemView />}/>
+                </Route>
+                <Route path="/item/perls">
+                  <Route path=":id" element={<ItemView />}/>
+                </Route>
+                <Route path="/item/featured">
+                  <Route path=":id" element={<ItemView />}/>
+                </Route>
+              </Route>
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/search/*" element={<SearchView />} />
         {/* review */}
         <Route path="/add-review/:id" element={<AddReview />} />
 
@@ -83,6 +106,9 @@ const App = () => {
         
       </Routes>
       <Footer />
+      </SearchProvider>
+      </WishItemProvider>
+      </CartItemsProvider>
     </BrowserRouter>
   );
 };
