@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import ItemCard from '../../Card/ItemCard/ItemCard';
 import ReactLoading from 'react-loading';
-import './FeaturedItems.css'
+import { Link } from "react-router-dom";
+import ItemCard from '../../Card/ItemCard/ItemCard';
+import './FeaturedItems.css';
 
 const FeaturedItems = (props) => {
     return (
@@ -21,10 +21,10 @@ const FeaturedItems = (props) => {
                         <ItemCard item={props.items[4]} category="featured"/>
                         <ItemCard item={props.items[10]} category="featured"/>
                         <ItemCard item={props.items[20]} category="featured"/>
-                        <ItemCard item={props.items[16]} category="featured"/>
-                        <ItemCard item={props.items[5]} category="featured"/>
+                        <ItemCard item={props.items[16]} category="featured"/> 
+                        {/* <ItemCard item={props.items[5]} category="featured"/>
                         <ItemCard item={props.items[13]} category="featured"/>
-                        <ItemCard item={props.items[23]} category="featured"/>
+                        <ItemCard item={props.items[23]} category="featured"/> */}
                     </div>
                 }
                 </div>

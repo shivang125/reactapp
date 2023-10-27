@@ -1,13 +1,13 @@
 
 
 .category__card__card {
-    height: 480px;
-    width: 320px;
+    height: 280px;
+    width: 280px;
     margin: 20px;
    /*  border-style: groove;
     border-color: black;
     border-width: 1px; */
-    box-shadow: 0px 2px 5px -2px ;
+    box-shadow: 0px 2px 12px -2px;
     position: relative;
 }
 

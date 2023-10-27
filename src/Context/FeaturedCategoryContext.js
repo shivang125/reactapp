@@ -1,25 +1,38 @@
 import { createContext } from "react";
 
-import Jewelry from '../assets/earring.png';
-import perls from '../assets/perls.jpg';
+// import Jewelry from '../assets/earring.png';
+// import perls from '../assets/perls.jpg';
+import PlaceholderImage from "../assets/placeholder.webp";
 
 export const FeatureCategoryContext = createContext([
     {
-        name: "Jewelry",
-        image: Jewelry,
+        name: "Neckless",
+        image: PlaceholderImage,
         url: '/category/jewelry',
         id: 1
     },
     {
         name: "Perls",
-        image: perls,
+        image: PlaceholderImage,
         url: '/category/perls',
         id: 2
-     }
-    // {
-    //     name: "Kids Fashion",
-    //     image: kidsFashion,
-    //     url: '/category/kids',
-    //     id: 3
-    // }
+     },
+    {
+        name: "Rings",
+        image: PlaceholderImage,
+        url: '/category/kids',
+        id: 3
+    },
+    {
+        name: "Earrings",
+        image: PlaceholderImage,
+        url: '/category/kids',
+        id: 4
+    },
+    {
+        name: "Charms",
+        image: PlaceholderImage,
+        url: '/category/kids',
+        id: 5
+    }
 ])

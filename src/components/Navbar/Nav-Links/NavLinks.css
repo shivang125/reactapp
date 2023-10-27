@@ -36,10 +36,12 @@ a:hover {
     margin: auto;
     display: flex;
     align-items: center;
-    flex-direction: row
+    flex-direction: row;
+    
 }
 .nav{
     display: inline-flex;
+    
 }
 .container .nav-link {
     color: black;
