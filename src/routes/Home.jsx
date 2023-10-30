@@ -1,8 +1,11 @@
 import axios from "axios";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import CustomerReview from "../components/CustomerReview/CustomerReview";
 import FeaturedCategories from "../components/Featured/Categories/FeaturedCategories";
 import FeaturedItems from "../components/Featured/Items/FetauredItems";
+import BannerAfterProductCategories from "../components/HomePage/BannerAfterProductCategories";
 import Landing from "../components/Landing/Landing";
+import SecondaryBanner from "../components/Landing/SecondaryBanner";
 import { TabTitle } from "../utils/General";
 
 
@@ -19,11 +22,14 @@ const Home = () => {
     }, [])
 
     return ( 
-        <Fragment>
+        <>
             <Landing />
+            <SecondaryBanner/>
             <FeaturedCategories />
+            <BannerAfterProductCategories/>
             <FeaturedItems items={featuredItems}/>
-        </Fragment>
+            <CustomerReview/>
+        </>
     );
 }
  

@@ -7,6 +7,7 @@ import TelegramIcon from '@mui/icons-material/Telegram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import './Footer.css';
+import NewsLetter from './NewsLetter';
 
 const copyright=new Date();
 const copyrightYear=copyright.getFullYear();
@@ -14,6 +15,8 @@ const copyrightYear=copyright.getFullYear();
 const Footer = () => {
     
     return ( 
+        <>
+        <NewsLetter/>
         <footer>
             <div className="footer__container">
                 <div className="footer__items__container">
@@ -82,8 +85,10 @@ const Footer = () => {
                         <li className="footer__privacy__policy">| Privacy Policy</li>
                     </ul>
                      </div>
+                
             </div>
         </footer>
+        </>
      );
 }
  

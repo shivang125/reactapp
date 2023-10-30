@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import ReactLoading from 'react-loading';
 import { TabTitle } from '../../utils/General';
 import ShopCategory from './Container/ShopCategory';
+import ShopCategoryBanner from "./Container/ShopCategoryBanner";
 import './Shop.css';
 
 const Shop = () => {
@@ -27,9 +28,10 @@ const Shop = () => {
 
     return ( 
         <div className="shop__contianer">
+            <ShopCategoryBanner/>
             {loading && <ReactLoading type="balls" color='#FFE26E'  height={100} width={100} className='container h-100 w-10 justify-self-center align-self-center m-auto'/>}
             {menItems && <ShopCategory name="Jewelry" key="men" items={menItems}/>}
-            {womenItems && <ShopCategory name="Perls" key="women" items={womenItems}/>}
+            {/* {womenItems && <ShopCategory name="Perls" key="women" items={womenItems}/>} */}
         </div>
      );
 }
