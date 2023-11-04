@@ -80,7 +80,7 @@ const FeaturedItems = (props) => {
           ) : (
             <div className="featured__products__card__container">
               {featuredItems.map((item) => (
-                <ItemCard key={item.id} item={item} category="featured" />
+                <ItemCard key={item.id} product={item} category="featured" />
               ))}
             </div>
           )}

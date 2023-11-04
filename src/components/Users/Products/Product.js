@@ -1,69 +1,141 @@
-import { useEffect, useState } from "react";
 import { RadioGroup } from "@headlessui/react";
+import { StarIcon } from "@heroicons/react/20/solid";
 import {
   CurrencyDollarIcon,
   GlobeAmericasIcon,
 } from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/20/solid";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-const product = {
-  name: "Basic Tee",
-  price: "$35",
-  href: "#",
-  breadcrumbs: [
-    { id: 1, name: "Women", href: "#" },
-    { id: 2, name: "Clothing", href: "#" },
-  ],
-  images: [
-    {
-      id: 1,
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-featured-product-shot.jpg",
-      imageAlt: "Back of women's Basic Tee in black.",
-      primary: true,
-    },
-    {
-      id: 2,
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-product-shot-01.jpg",
-      imageAlt: "Side profile of women's Basic Tee in black.",
-      primary: false,
-    },
-    {
-      id: 3,
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-product-shot-02.jpg",
-      imageAlt: "Front of women's Basic Tee in black.",
-      primary: false,
-    },
-  ],
-  colors: [
-    { name: "Black", bgColor: "bg-gray-900", selectedColor: "ring-gray-900" },
-    {
-      name: "Heather Grey",
-      bgColor: "bg-gray-400",
-      selectedColor: "ring-gray-400",
-    },
-  ],
-  sizes: [
-    { name: "XXS", inStock: true },
-    { name: "XS", inStock: true },
-    { name: "S", inStock: true },
-    { name: "M", inStock: true },
-    { name: "L", inStock: true },
-    { name: "XL", inStock: false },
-  ],
-  description: `
-    <p>The Basic tee is an honest new take on a classic. The tee uses super soft, pre-shrunk cotton for true comfort and a dependable fit. They are hand cut and sewn locally, with a special dye technique that gives each tee it's own look.</p>
-    <p>Looking to stock your closet? The Basic tee also comes in a 3-pack or 5-pack at a bundle discount.</p>
-  `,
-  details: [
-    "Only the best materials",
-    "Ethically and locally made",
-    "Pre-washed and pre-shrunk",
-    "Machine wash cold with similar colors",
-  ],
-};
+const product = [
+  {
+    id: 1,
+    category: 'Necklace',
+    name: 'Bird of Paradise Pendant',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Birds-of-Paradise-Pendant-2-325x325.jpg',
+    price: 100000,
+  },
+  {
+    id: 2,
+    category: 'Rings',
+    name: 'Kalvesna Diamond Twig Ring',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Kalvesna-Diamond-Twig-Ring-2-325x325.jpg',
+    price: 100000,
+  },
+  {
+    id: 3,
+    category: 'Earrings',
+    name: 'Blue Stripes & Stone Earrings',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Blue-Stripes-Stone-Earrings-2-325x325.jpg',
+    price: 100000,
+  },
+  {
+    id: 4,
+    category: 'Bracelets',
+    name: 'Cross Stripes & Stone Bracelet',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Cross-Stripes-Stone-Bracelet-1-325x325.jpg',
+    price: 100000,
+  },
+  {
+    id: 5,
+    category: 'Charms & Dangles',
+    name: 'Echoes Necklace Extension Piece',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Echoes-Necklace-Extension-Piece-1-325x325.jpg',
+    price: 100000,
+  },
+  {
+    id: 6,
+    category: 'Neckless',
+    name: 'Cross of Light Pendant',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Cross-of-Light-Pendant-1-325x325.jpg',
+    price: 100000,
+  },
+{
+    id: 7,
+    category: 'Bracelets',
+    name: 'Classic Plain Stone Bracelet',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Classic-Plain-Stone-Bracelet-1-325x325.jpg',
+    price: 100000,
+  },
+{
+    id: 8,
+    category: 'Bracelets',
+    name: 'Rose Gold Bracelet',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Rose-Gold-Bracelet-2-325x325.jpg',
+    price: 100000,
+  },
+{
+    id: 9,
+    category: 'Neckless',
+    name: 'Classic Shine Necklace',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Classic-Shine-Necklace-2-325x325.jpg',
+    price: 100000,
+  },
+{
+    id: 10,
+    category: 'Earrings',
+    name: 'Sterling Silver Dangles Earrings',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Sterling-Silver-Dangles-Earrings-1-325x325.jpg',
+    price: 100000,
+  },
+{
+    id: 11,
+    category: 'Rings',
+    name: 'Kalvesna Diamond Twig Ring',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Kalvesna-Diamond-Twig-Ring-1-325x325.jpg',
+    price: 100000,
+  },
+{
+    id: 12,
+    category: 'Rings',
+    name: 'Love Both Engagement Ring',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Love-Both-Engagement-Ring-1-325x325.jpg',
+    price: 100000,
+  },
+{
+    id: 13,
+    category: 'Rings',
+    name: 'Four Leaf Clover Rings',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Four-Leaf-Clover-Rings-1-325x325.jpg',
+    price: 100000,
+  },
+{
+    id: 14,
+    category: 'Neckless',
+    name: 'Circle of Chain Necklace',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Circle-of-Chain-Necklace-1-325x325.jpg',
+    price: 100000,
+  },
+{
+    id: 15,
+    category: 'Bracelets',
+    name: 'Echoes Swing word Bracelet',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Echoes-Swing-word-Bracelet-1-325x325.jpg',
+    price: 100000,
+  },
+{
+    id: 16,
+    category: 'Rings',
+    name: 'Reflections Gold Rings',
+    imageUrl:
+      'https://alukas.presslayouts.com/wp-content/uploads/2023/02/Reflections-Gold-Rings-1-325x325.jpg',
+    price: 100000,
+  },
+];
 
 const policies = [
   {
@@ -90,7 +162,6 @@ export default function Product() {
   const addToCartHandler = (item) => {};
   let productDetails = {};
   let productColor;
-  let productSize;
   let cartItems = [];
 
   return (
@@ -103,7 +174,7 @@ export default function Product() {
                 {productDetails?.product?.name}
               </h1>
               <p className="text-xl font-medium text-gray-900">
-                $ {productDetails?.product?.price}.00
+                Rs {productDetails?.product?.price}.00
               </p>
             </div>
             {/* Reviews */}
@@ -208,35 +279,7 @@ export default function Product() {
                 </div>
               </div>
 
-              {/* Size picker */}
-              <div className="mt-8">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-sm font-medium text-gray-900">Size</h2>
-                </div>
-                <RadioGroup
-                  value={selectedSize}
-                  onChange={setSelectedSize}
-                  className="mt-2">
-                  {/* Choose size */}
-                  <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-                    {productSize?.map((size) => (
-                      <RadioGroup.Option
-                        key={size}
-                        value={size}
-                        className={({ active, checked }) => {
-                          return classNames(
-                            checked
-                              ? "bg-indigo-600 border-transparent  text-white hover:bg-indigo-700"
-                              : "bg-white border-gray-200 text-gray-900 hover:bg-gray-50",
-                            "border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase sm:flex-1 cursor-pointer"
-                          );
-                        }}>
-                        <RadioGroup.Label as="span">{size}</RadioGroup.Label>
-                      </RadioGroup.Option>
-                    ))}
-                  </div>
-                </RadioGroup>
-              </div>
+
               {/* add to cart */}
               <button
                 onClick={() => addToCartHandler()}

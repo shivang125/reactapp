@@ -2,66 +2,72 @@ import { useEffect, useState } from "react";
 import { CartItemsContext } from "./CartItemsContext";
 
 const CartItemsProvider = (props) => {
+  const [cartItems, setCartItems] = useState([]);
+  const [totalAmountOfItems, setTotalAmountOfItems] = useState(0);
 
-    const [cartItems, setCartItems] = useState([])
-    const [totalAmountOfItems, setTotalAmountOfItems] = useState(0)
-    
-    const addToCartHandler = (item, quantity) => {
-        const { _id, name, price, image, category, size} = item;
-        removeFromCartHandler(item)
-        setCartItems((prevItems) => [...prevItems, {_id, name, price, image, category, itemQuantity: quantity, size}])
+  const addToCartHandler = (item, quantity) => {
+    const { id, name, price, imageUrl, category, size } = item;
+    const updatedCart = [...cartItems];
+  
+    // Check if the item is already in the cart
+    const existingItemIndex = updatedCart.findIndex((cartItem) => cartItem.id === id);
+  
+    if (existingItemIndex !== -1) {
+      // If the item is already in the cart, update its quantity
+      updatedCart[existingItemIndex].itemQuantity += quantity;
+    } else {
+      // If it's a new item, add it to the cart
+      updatedCart.push({ id, name, price, imageUrl, category, itemQuantity: quantity, size });
     }
+  
+    setCartItems(updatedCart);
+  };
 
-    const removeFromCartHandler = (item) => {
-        setCartItems(cartItems.filter((prevItem) => prevItem._id !== item._id))
-    }
+  const removeFromCartHandler = (item) => {
+    setCartItems(cartItems.filter((cartItem) => cartItem.id !== item.id));
+  };
 
-    const calculateTotalAmount = (currentCartItems) => {
-        let total = 0
-        currentCartItems.forEach((item) => {
-            total = total + (item.price * item.itemQuantity)
-        })
+  const calculateTotalAmount = (currentCartItems) => {
+    let total = 0;
+    currentCartItems.forEach((item) => {
+      total += item.price * item.itemQuantity;
+    });
+    setTotalAmountOfItems(total);
+  };
 
-        setTotalAmountOfItems(total)
-    }
-
-    const quantityHandler = (itemId, action) => {
-        if(action === 'INC'){
-            setCartItems(cartItems.map((item) => {
-                if(item.id  === itemId){
-                    item.itemQuantity += 1
-                }
-                return item
-            }))
+  const quantityHandler = (itemId, action) => {
+    setCartItems((prevCartItems) => {
+      return prevCartItems.map((item) => {
+        if (item.id === itemId) {
+          if (action === 'INC') {
+            return { ...item, itemQuantity: item.itemQuantity + 1 };
+          } else if (action === 'DEC' && item.itemQuantity > 1) {
+            return { ...item, itemQuantity: item.itemQuantity - 1 };
+          }
         }
-        else {
-            setCartItems(cartItems.map((item) => {
-                if(item.id  === itemId){
-                    item.itemQuantity -= 1
-                }
-                return item
-            }))
-        }
-    }
+        return item;
+      });
+    });
+  };
+  
 
-    useEffect(() => {
-        calculateTotalAmount(cartItems)
-    }, [cartItems])
+  useEffect(() => {
+    calculateTotalAmount(cartItems);
+  }, [cartItems]);
 
+  const cartItemCtx = {
+    items: cartItems,
+    totalAmount: totalAmountOfItems,
+    addItem: addToCartHandler,
+    removeItem: removeFromCartHandler,
+    quantity: quantityHandler,
+  };
 
-    const cartItemCtx = {
-        items: cartItems,
-        totalAmount: totalAmountOfItems,
-        addItem: addToCartHandler,
-        removeItem: removeFromCartHandler,
-        quantity: quantityHandler
-    }
+  return (
+    <CartItemsContext.Provider value={cartItemCtx}>
+      {props.children}
+    </CartItemsContext.Provider>
+  );
+};
 
-    return ( 
-        <CartItemsContext.Provider value={cartItemCtx}>
-            {props.children}
-        </CartItemsContext.Provider>
-     );
-}
- 
 export default CartItemsProvider;

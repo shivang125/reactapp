@@ -20,6 +20,7 @@ import OrdersList from "./components/Admin/Orders/OdersList";
 import AddProduct from "./components/Admin/Products/AddProduct";
 import ManageStocks from "./components/Admin/Products/ManageStocks";
 import UpdateProduct from "./components/Admin/Products/UpdateProduct";
+import Cart from "./components/Cart/cart";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import Shop from './components/Shop/Shop';
@@ -28,7 +29,6 @@ import Login from "./components/Users/Forms/Login";
 import RegisterForm from "./components/Users/Forms/RegisterForm";
 import OrderPayment from "./components/Users/Products/OrderPayment";
 import ProductsFilters from "./components/Users/Products/ProductsFilters";
-import ShoppingCart from "./components/Users/Products/ShoppingCart";
 import CustomerProfile from "./components/Users/Profile/CustomerProfile";
 import AddReview from "./components/Users/Reviews/AddReview";
 import Wishlist from "./components/Wishlist/index";
@@ -96,8 +96,16 @@ const App = () => {
         <Route path="/add-review/:id" element={<AddReview />} />
 
         {/* shopping cart */}
-        <Route path="/shopping-cart" element={<ShoppingCart />} />
-        <Route path="/order-payment" element={<OrderPayment />} />
+        <Route
+          path="/cart"
+          element={
+            
+              <Cart />
+            
+          }
+        >
+        </Route>
+        <Route path="/checkout" element={<OrderPayment />} />
         {/* users */}
         <Route path="/login" element={<Login />} />
         <Route path="/forgotpassword" element={<ForgotPasswordPage />} />

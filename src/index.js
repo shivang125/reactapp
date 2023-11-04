@@ -1,9 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import App from "./App";
+import { useAddress } from "./Context/AddressContext";
+import { useAuth } from "./Context/AuthContext";
+import { useCart } from "./Context/CartContext";
+import { useData } from "./Context/DataContext";
+import { useWish } from "./Context/WishListContext";
+import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
+export { useAddress, useAuth, useCart, useData, useWish };
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
