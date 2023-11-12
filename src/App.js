@@ -31,7 +31,7 @@ import OrderPayment from "./components/Users/Products/OrderPayment";
 import ProductsFilters from "./components/Users/Products/ProductsFilters";
 import CustomerProfile from "./components/Users/Profile/CustomerProfile";
 import AddReview from "./components/Users/Reviews/AddReview";
-import Wishlist from "./components/Wishlist/index";
+import Wishlist from "./components/Wishlist/WishList";
 import CategoryView from "./routes/CategoryView";
 import Home from "./routes/Home";
 import ItemView from "./routes/ItemView";
