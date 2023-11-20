@@ -1,9 +1,8 @@
-import { useContext } from 'react';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { IconButton } from '@mui/material';
-import './WishCard.css'
-import { Button } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
+import { useContext } from 'react';
 import { WishItemsContext } from '../../../Context/WishItemsContext';
+import './WishCard.css';
 
 const WishCard = (props) => {
 
@@ -25,7 +24,7 @@ const WishCard = (props) => {
                 </IconButton>
             </div>
             <div className="wish__item__image">
-                <img src={`https://shema-ecommerce.herokuapp.com/${props.item.category}/${props.item.image[0].filename}`} alt="item" className="wish__image"/>
+                <img src={props.item.imageUrl} alt="item" className="wish__image"/>
             </div>
             <div className="wish__item__name">{props.item.name}</div>
             <div className="wish__item__price">${props.item.price}</div>
