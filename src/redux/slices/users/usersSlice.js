@@ -1,12 +1,42 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-
 import baseURL from "../../../utils/baseURL";
-import {
-  resetErrAction,
-  resetSuccessAction,
-} from "../globalActions/globalActions";
-//initialState
+import { resetErrAction } from "../globalActions/globalActions";
+
+export const addToWishlistAction = createAsyncThunk(
+  "users/add-to-wishlist",
+  async (itemId, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const { data } = await axios.post(`${baseURL}/users/add-to-wishlist`, {
+        itemId,
+      });
+      dispatch(getUserProfileAction());
+      return data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+export const removeFromWishlistAction = createAsyncThunk(
+  "users/remove-from-wishlist",
+  async (itemId, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const { data } = await axios.delete(
+        `${baseURL}/users/remove-from-wishlist`,
+        {
+          data: { itemId },
+        }
+      );
+      dispatch(getUserProfileAction());
+      return data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
 const initialState = {
   loading: false,
   error: null,
@@ -24,14 +54,14 @@ const initialState = {
 
 //register action
 export const registerUserAction = createAsyncThunk(
-  "users/register",
+  "/register",
   async (
     { email, password, fullname },
     { rejectWithValue, getState, dispatch }
   ) => {
     try {
       //make the http request
-      const { data } = await axios.post(`${baseURL}/users/register`, {
+      const { data } = await axios.post(`${baseURL}/register`, {
         email,
         password,
         fullname,
@@ -223,6 +253,28 @@ const usersSlice = createSlice({
     builder.addCase(resetErrAction.pending, (state) => {
       state.error = null;
     });
+    // Wishlist actions
+    builder.addCase(addToWishlistAction.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(addToWishlistAction.fulfilled, (state, action) => {
+      state.loading = false;
+    });
+    builder.addCase(addToWishlistAction.rejected, (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    });
+
+    builder.addCase(removeFromWishlistAction.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(removeFromWishlistAction.fulfilled, (state, action) => {
+      state.loading = false;
+    });
+    builder.addCase(removeFromWishlistAction.rejected, (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    });
   },
 });
 
@@ -230,3 +282,4 @@ const usersSlice = createSlice({
 const usersReducer = usersSlice.reducer;
 
 export default usersReducer;
+
