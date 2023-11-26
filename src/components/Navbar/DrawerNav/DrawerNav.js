@@ -59,22 +59,23 @@ const DrawerNav = () => {
         </Box>
       );
 
-    return ( 
-        <Fragment>
-            {['left'].map((anchor) => (
-                <Fragment >
-                {state.left? <MenuOpenIcon fontSize='large' /> : <MenuIcon fontSize='large' onClick={toggleDrawer(anchor, true)} />}
-                <Drawer
-                    anchor={anchor}
-                    open={state[anchor]}
-                    onClose={toggleDrawer(anchor, false)}
-                >
-                    {list(anchor)}
-                </Drawer>
-                </Fragment>
-            ))}
-        </Fragment>
-     );
+      return (
+        <>
+          {['left'].map((anchor) => (
+            <Fragment key={anchor}>
+              {state.left ? (
+                <MenuOpenIcon fontSize='large' />
+              ) : (
+                <MenuIcon fontSize='large' onClick={toggleDrawer(anchor, true)} />
+              )}
+              <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
+                {list(anchor)}
+              </Drawer>
+            </Fragment>
+          ))}
+        </>
+      );
+      
 }
  
 export default DrawerNav;

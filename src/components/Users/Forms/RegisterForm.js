@@ -1,56 +1,39 @@
-import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { registerUserAction } from "../../../redux/slices/users/usersSlice";
+
 import './forms.css';
+
 const RegisterForm = () => {
-  //dispatch
+  const dispatch = useDispatch();
+  const history = useNavigate();
+
   const [formData, setFormData] = useState({
     fullname: "",
     email: "",
     password: "",
   });
-  //---Destructuring---
+
   const { fullname, email, password } = formData;
-  //---onchange handler----
+
   const onChangeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  //---onsubmit handler----
   const onSubmitHandler = (e) => {
     e.preventDefault();
+    dispatch(registerUserAction({ name:fullname, email, password }));
   };
-  //select store data
 
-  //select store data
-  const { loading, userAuth } = {};
-  //redirect
-  if (userAuth?.userInfo?.status) {
-    window.location.href = "/login";
-  }
+  const { user, error, loading } = useSelector((state) => state?.users);
 
-  return (
-    <RegisterCard
-      fullname={fullname}
-      email={email}
-      password={password}
-      onChangeHandler={onChangeHandler}
-      onSubmitHandler={onSubmitHandler}
-      loading={loading}
-      userAuth={userAuth}
-    />
-  );
-};
+  useEffect(() => {
+    if (user) {
+      history.push("/login");
+    }
+  }, [user, history]);
 
-
-const RegisterCard = ({
-  fullname,
-  email,
-  password,
-  onChangeHandler,
-  onSubmitHandler,
-  loading,
-  userAuth,
-}) => {
   return (
     <div className="register__card__container">
       <div className="register__card">
@@ -59,22 +42,14 @@ const RegisterCard = ({
         </div>
         <div className="register__inputs">
           <div className="fname__input__container reg__input__container">
-            <label className="fname__label input__label">First name</label>
+            <label className="fname__label input__label">Full name</label>
             <input
               name="fullname"
               value={fullname}
               onChange={onChangeHandler}
               type="text"
               className="fname__input register__input"
-              placeholder="First Name"
-            />
-          </div>
-          <div className="lname__input__container reg__input__container">
-            <label className="lname__label input__label">Last name</label>
-            <input
-              type="text"
-              className="lname__input register__input"
-              placeholder="Last Name"
+              placeholder="Full Name"
             />
           </div>
           <div className="email__input__container reg__input__container">
@@ -118,4 +93,5 @@ const RegisterCard = ({
     </div>
   );
 };
+
 export default RegisterForm;

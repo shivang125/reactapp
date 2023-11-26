@@ -1,41 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+const baseURL = "http://localhost:6000";
 
-import baseURL from "../../../utils/baseURL";
-import {
-  resetErrAction,
-  resetSuccessAction,
-} from "../globalActions/globalActions";
-//initialState
-const initialState = {
-  loading: false,
-  error: null,
-  users: [],
-  user: null,
-  profile: {},
-  userAuth: {
-    loading: false,
-    error: null,
-    userInfo: localStorage.getItem("userInfo")
-      ? JSON.parse(localStorage.getItem("userInfo"))
-      : null,
-  },
-};
-
-//register action
-export const registerUserAction = createAsyncThunk(
-  "users/register",
-  async (
-    { email, password, fullname },
-    { rejectWithValue, getState, dispatch }
-  ) => {
+export const addToWishlistAction = createAsyncThunk(
+  "user/add-to-wishlist",
+  async (itemId, { rejectWithValue, dispatch }) => {
     try {
-      //make the http request
-      const { data } = await axios.post(`${baseURL}/users/register`, {
-        email,
-        password,
-        fullname,
+      const { data } = await axios.post(`${baseURL}/users/add-to-wishlist`, {
+        itemId,
       });
+      dispatch(getUserProfileAction());
       return data;
     } catch (error) {
       console.log(error);
@@ -44,9 +18,68 @@ export const registerUserAction = createAsyncThunk(
   }
 );
 
-//update user shipping address action
+export const removeFromWishlistAction = createAsyncThunk(
+  "user/remove-from-wishlist",
+  async (itemId, { rejectWithValue, dispatch }) => {
+    try {
+      const { data } = await axios.delete(
+        `${baseURL}/users/remove-from-wishlist`,
+        {
+          data: { itemId },
+        }
+      );
+      dispatch(getUserProfileAction());
+      return data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+// export const registerUserAction = createAsyncThunk(
+//   "user/register",
+//   async ({ name, email, password }, { rejectWithValue }) => {
+//     try {
+//       const { data } = await axios.post(`${baseURL}/register`, {
+//         name,
+//         email,
+//         password
+//       });
+//       return data;
+//     } catch (error) {
+//       console.log(error);
+//       return rejectWithValue(error?.response?.data);
+//     }
+//   }
+// );
+export const registerUserAction = async (signUpData) => {
+  try {
+    const response = await axios.post(`${baseURL}/register`, signUpData);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+export const loginUserAction = createAsyncThunk(
+  "user/login",
+  async ({ email, password }, { rejectWithValue, dispatch }) => {
+    try {
+      const { data } = await axios.post(`${baseURL}/users/login`, {
+        email,
+        password,
+      });
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      dispatch(getUserProfileAction());
+      return data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
 export const updateUserShippingAddressAction = createAsyncThunk(
-  "users/update-shipping-address",
+  "user/update-shipping-address",
   async (
     {
       firstName,
@@ -54,25 +87,14 @@ export const updateUserShippingAddressAction = createAsyncThunk(
       address,
       city,
       postalCode,
-      province,
-      phone,
+      state,
+      phoneNumber,
       country,
     },
     { rejectWithValue, getState, dispatch }
   ) => {
-    console.log(
-      firstName,
-      lastName,
-      address,
-      city,
-      postalCode,
-      province,
-      phone,
-      country
-    );
     try {
-      //get token
-      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const token = getState()?.user?.userAuth?.userInfo?.token;
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -86,8 +108,8 @@ export const updateUserShippingAddressAction = createAsyncThunk(
           address,
           city,
           postalCode,
-          province,
-          phone,
+          state,
+          phoneNumber,
           country,
         },
         config
@@ -100,13 +122,11 @@ export const updateUserShippingAddressAction = createAsyncThunk(
   }
 );
 
-//user profile action
 export const getUserProfileAction = createAsyncThunk(
-  "users/profile-fetched",
-  async (payload, { rejectWithValue, getState, dispatch }) => {
+  "user/profile-fetched",
+  async (payload, { rejectWithValue, getState }) => {
     try {
-      //get token
-      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const token = getState()?.user?.userAuth?.userInfo?.token;
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -121,112 +141,82 @@ export const getUserProfileAction = createAsyncThunk(
   }
 );
 
-//login action
-export const loginUserAction = createAsyncThunk(
-  "users/login",
-  async ({ email, password }, { rejectWithValue, getState, dispatch }) => {
-    try {
-      //make the http request
-      const { data } = await axios.post(`${baseURL}/users/login`, {
-        email,
-        password,
-      });
-      //save the user into localstorage
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      return data;
-    } catch (error) {
-      console.log(error);
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
+const initialState = {
+  loading: false,
+  error: null,
+  user: null,
+  profile: {},
+  userAuth: {
+    loading: false,
+    error: null,
+    userInfo: localStorage.getItem("userInfo")
+      ? JSON.parse(localStorage.getItem("userInfo"))
+      : null,
+  },
+};
 
-//logout action
-export const logoutAction = createAsyncThunk(
-  "users/logout",
-  async (payload, { rejectWithValue, getState, dispatch }) => {
-    //get token
-    localStorage.removeItem("userInfo");
-    return true;
-  }
-);
-
-//users slice
-
-const usersSlice = createSlice({
-  name: "users",
+const userSlice = createSlice({
+  name: "user",
   initialState,
+  reducers: {},
   extraReducers: (builder) => {
-    //handle actions
-    //login
-    builder.addCase(loginUserAction.pending, (state, action) => {
-      state.userAuth.loading = true;
-    });
-    builder.addCase(loginUserAction.fulfilled, (state, action) => {
-      state.userAuth.userInfo = action.payload;
-      state.userAuth.loading = false;
-    });
-    builder.addCase(loginUserAction.rejected, (state, action) => {
-      state.userAuth.error = action.payload;
-      state.userAuth.loading = false;
-    });
-    //register
-    builder.addCase(registerUserAction.pending, (state, action) => {
-      state.loading = true;
-    });
-    builder.addCase(registerUserAction.fulfilled, (state, action) => {
-      state.user = action.payload;
-      state.loading = false;
-    });
-    builder.addCase(registerUserAction.rejected, (state, action) => {
-      state.error = action.payload;
-      state.loading = false;
-    });
-    //logout
-    builder.addCase(logoutAction.fulfilled, (state, action) => {
-      state.userAuth.userInfo = null;
-    });
-    //profile
-    builder.addCase(getUserProfileAction.pending, (state, action) => {
-      state.loading = true;
-    });
-    builder.addCase(getUserProfileAction.fulfilled, (state, action) => {
-      state.profile = action.payload;
-      state.loading = false;
-    });
-    builder.addCase(getUserProfileAction.rejected, (state, action) => {
-      state.error = action.payload;
-      state.loading = false;
-    });
-    //shipping address
-    builder.addCase(
-      updateUserShippingAddressAction.pending,
-      (state, action) => {
+    builder
+      .addCase(getUserProfileAction.pending, (state) => {
         state.loading = true;
-      }
-    );
-    builder.addCase(
-      updateUserShippingAddressAction.fulfilled,
-      (state, action) => {
-        state.user = action.payload;
+      })
+      .addCase(getUserProfileAction.fulfilled, (state, action) => {
+        state.profile = action.payload;
         state.loading = false;
-      }
-    );
-    builder.addCase(
-      updateUserShippingAddressAction.rejected,
-      (state, action) => {
+      })
+      .addCase(getUserProfileAction.rejected, (state, action) => {
         state.error = action.payload;
         state.loading = false;
-      }
-    );
-    //reset error action
-    builder.addCase(resetErrAction.pending, (state) => {
-      state.error = null;
-    });
+      })
+      .addCase(addToWishlistAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addToWishlistAction.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(addToWishlistAction.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading = false;
+      })
+      .addCase(removeFromWishlistAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(removeFromWishlistAction.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(removeFromWishlistAction.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading = false;
+      })
+      .addCase(updateUserShippingAddressAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateUserShippingAddressAction.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.loading = false;
+      })
+      .addCase(updateUserShippingAddressAction.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading = false;
+      })
+      .addCase(loginUserAction.pending, (state) => {
+        state.userAuth.loading = true;
+      })
+      .addCase(loginUserAction.fulfilled, (state, action) => {
+        state.userAuth.userInfo = action.payload;
+        state.userAuth.loading = false;
+      })
+      .addCase(loginUserAction.rejected, (state, action) => {
+        state.userAuth.error = action.payload;
+        state.userAuth.loading = false;
+      });
   },
 });
 
-//generate reducer
-const usersReducer = usersSlice.reducer;
+const userReducer = userSlice.reducer;
 
-export default usersReducer;
+export default userReducer;

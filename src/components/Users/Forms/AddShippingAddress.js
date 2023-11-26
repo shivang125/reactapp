@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { updateUserShippingAddressAction } from "../../../redux/slices/users/usersSlice";
 
 const AddShippingAddress = ({ onSubmit }) => {
+  const dispatch=useDispatch();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -11,7 +14,6 @@ const AddShippingAddress = ({ onSubmit }) => {
     postalCode: "",
     phone: "",
   });
-
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -20,7 +22,7 @@ const AddShippingAddress = ({ onSubmit }) => {
     e.preventDefault();
     // Validate the form data, and then submit
     if (formData.firstName && formData.address && formData.city && formData.country) {
-      onSubmit(formData);
+      dispatch(updateUserShippingAddressAction(formData));
     } else {
       // Handle validation errors
       alert("Please fill in required fields");
