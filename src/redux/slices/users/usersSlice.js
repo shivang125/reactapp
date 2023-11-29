@@ -37,30 +37,22 @@ export const removeFromWishlistAction = createAsyncThunk(
   }
 );
 
-// export const registerUserAction = createAsyncThunk(
-//   "user/register",
-//   async ({ name, email, password }, { rejectWithValue }) => {
-//     try {
-//       const { data } = await axios.post(`${baseURL}/register`, {
-//         name,
-//         email,
-//         password
-//       });
-//       return data;
-//     } catch (error) {
-//       console.log(error);
-//       return rejectWithValue(error?.response?.data);
-//     }
-//   }
-// );
-export const registerUserAction = async (signUpData) => {
-  try {
-    const response = await axios.post(`${baseURL}/register`, signUpData);
-    return response.data;
-  } catch (error) {
-    throw error.response.data;
+export const registerUserAction = createAsyncThunk(
+  "user/register",
+  async ({ name, email, password }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(`${baseURL}/register`, {
+        name,
+        email,
+        password
+      });
+      return data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error?.response?.data);
+    }
   }
-};
+);
 export const loginUserAction = createAsyncThunk(
   "user/login",
   async ({ email, password }, { rejectWithValue, dispatch }) => {
