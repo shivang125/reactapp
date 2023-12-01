@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUserAction } from "../../../redux/slices/users/usersSlice";
+import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 
 import './forms.css';
 
@@ -15,26 +16,27 @@ const Login = () => {
   });
 
   const { email, password } = formData;
-
   const onChangeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  //---onsubmit handler----
   const onSubmitHandler = (e) => {
     e.preventDefault();
     dispatch(loginUserAction({ email, password }));
   };
 
-  const { loading, userAuth } = useSelector((state) => state?.users?.userAuth);
+  //get data from store
+  const { error, loading, userInfo } = useSelector(
+    (state) => state?.users?.userAuth
+  );
 
+  //redirect
   useEffect(() => {
-    if (userAuth?.userInfo?.status) {
-      if (userAuth?.userInfo?.role === "admin") {
-        history.push("/admin");
-      } else {
-        history.push("/");
-      }
+    if (userInfo?.userFound) {
+      window.location.href = "/";
     }
-  }, [userAuth, history]);
+  }, [userInfo]);
 
   return (
     <>
@@ -68,10 +70,12 @@ const Login = () => {
             </div>
             <div className="login__button__container">
               <button onClick={onSubmitHandler} className="login__button">
-                LOGIN
+                {loading ? "Logging in..." : "LOGIN"}
               </button>
             </div>
           </div>
+          {error && <ErrorMsg message={error?.message} />}
+
           <div className="login__other__actions">
             <div className="login__forgot__password">
               Forgot password?{" "}

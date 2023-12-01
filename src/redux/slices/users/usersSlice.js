@@ -1,15 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-const baseURL = "http://localhost:6000";
+import SuccessMsg from "../../../components/SuccessMsg/SuccessMsg";
+const baseURL = "http://localhost:3001";
+
 
 export const addToWishlistAction = createAsyncThunk(
   "user/add-to-wishlist",
   async (itemId, { rejectWithValue, dispatch }) => {
     try {
-      const { data } = await axios.post(`${baseURL}/users/add-to-wishlist`, {
+      const { data } = await axios.post(`${baseURL}/api/v1/users/add-to-wishlist`, {
         itemId,
       });
-      dispatch(getUserProfileAction());
+
       return data;
     } catch (error) {
       console.log(error);
@@ -23,12 +25,12 @@ export const removeFromWishlistAction = createAsyncThunk(
   async (itemId, { rejectWithValue, dispatch }) => {
     try {
       const { data } = await axios.delete(
-        `${baseURL}/users/remove-from-wishlist`,
+        `${baseURL}/api/v1/users/remove-from-wishlist`,
         {
           data: { itemId },
         }
       );
-      dispatch(getUserProfileAction());
+
       return data;
     } catch (error) {
       console.log(error);
@@ -37,15 +39,22 @@ export const removeFromWishlistAction = createAsyncThunk(
   }
 );
 
-export const registerUserAction = createAsyncThunk(
-  "user/register",
-  async ({ name, email, password }, { rejectWithValue }) => {
+export const registerUser = createAsyncThunk(
+  "users/register",
+  async (
+    { email, password, fullname },
+    { rejectWithValue, getState, dispatch }
+  ) => {
     try {
-      const { data } = await axios.post(`${baseURL}/register`, {
-        name,
+      //make the http request
+      const { data } = await axios.post(`${baseURL}/api/v1/users/register`, {
         email,
-        password
+        password,
+        fullname,
       });
+      if(data!==undefined){
+        SuccessMsg("Registered Successfully");
+      }
       return data;
     } catch (error) {
       console.log(error);
@@ -53,16 +62,19 @@ export const registerUserAction = createAsyncThunk(
     }
   }
 );
+
+
 export const loginUserAction = createAsyncThunk(
-  "user/login",
-  async ({ email, password }, { rejectWithValue, dispatch }) => {
+  "users/login",
+  async ({ email, password }, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { data } = await axios.post(`${baseURL}/users/login`, {
+      //make the http request
+      const { data } = await axios.post(`${baseURL}/api/v1/users/login`, {
         email,
         password,
       });
+      //save the user into localstorage
       localStorage.setItem("userInfo", JSON.stringify(data));
-      dispatch(getUserProfileAction());
       return data;
     } catch (error) {
       console.log(error);
@@ -70,6 +82,15 @@ export const loginUserAction = createAsyncThunk(
     }
   }
 );
+export const logoutAction = createAsyncThunk(
+  "users/logout",
+  async (payload, { rejectWithValue, getState, dispatch }) => {
+    //get token
+    localStorage.removeItem("userInfo");
+    return true;
+  }
+);
+
 export const updateUserShippingAddressAction = createAsyncThunk(
   "user/update-shipping-address",
   async (
@@ -93,7 +114,7 @@ export const updateUserShippingAddressAction = createAsyncThunk(
         },
       };
       const { data } = await axios.put(
-        `${baseURL}/users/update/shipping`,
+        `${baseURL}/api/v1/users/update/shipping`,
         {
           firstName,
           lastName,
@@ -124,8 +145,8 @@ export const getUserProfileAction = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       };
-      const { data } = await axios.get(`${baseURL}/users/profile`, config);
-      return data;
+      const res = await axios.get(`${baseURL}/api/v1/users/profile`, config);
+      return res;
     } catch (error) {
       console.log(error);
       return rejectWithValue(error?.response?.data);
@@ -150,7 +171,9 @@ const initialState = {
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {clearLoginError: (state) => {
+    state.userAuth.error = null;
+  },},
   extraReducers: (builder) => {
     builder
       .addCase(getUserProfileAction.pending, (state) => {
@@ -205,7 +228,8 @@ const userSlice = createSlice({
       .addCase(loginUserAction.rejected, (state, action) => {
         state.userAuth.error = action.payload;
         state.userAuth.loading = false;
-      });
+      })
+      ;
   },
 });
 

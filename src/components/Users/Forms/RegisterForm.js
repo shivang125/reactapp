@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUserAction } from "../../../redux/slices/users/usersSlice";
+import { registerUser } from "../../../redux/slices/users/usersSlice";
 
 import './forms.css';
 
@@ -23,16 +23,16 @@ const RegisterForm = () => {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    dispatch(registerUserAction({ name:fullname, email, password }));
+    dispatch(registerUser({ fullname, email, password }));
   };
 
-  const { user, error, loading } = useSelector((state) => state?.users);
+  const { user, userAuth, error, loading } = useSelector((state) => state?.users);
 
   useEffect(() => {
     if (user) {
-      history.push("/login");
+      window.location.href = "/login";
     }
-  }, [user, history]);
+  }, [user]);
 
   return (
     <div className="register__card__container">
