@@ -27,8 +27,8 @@ const Control = () => {
     return ( 
         <div className="control__bar__container">
             <div className="controls__container">
-                <div className="control">
-                {!isLoggedIn && (
+            {!isLoggedIn && (<div className="Signinlogin">
+                
                     <>
                       <div className="flow-root">
                         <Link
@@ -47,27 +47,27 @@ const Control = () => {
                         </Link>
                       </div>
                     </>
-                  )}
-                </div>
-                <div className="control">
-                {isLoggedIn && (
+                </div>)}
+                {isLoggedIn && (<div className="control">
+                
                     <Link to="/wishlist">
                         <Badge badgeContent={wishItems.items.length} color="error">
                             <FavoriteBorderIcon color="black" sx={{ width: '35px'}}/>
                         </Badge>
                     </Link>
-                )}
+                
                 </div>
-                <div className="control">
+                )}
                 {isLoggedIn && (
+                <div className="control">
                     <Link to="/cart" className="group -m-2 flex items-center p-2">
                         <Badge badgeContent={cartItems.items.length} color="error">
                             <ShoppingCartIcon className="h-6 w-6 flex-shrink-0 text-black-400 group-hover:tex-black-500"
                             aria-hidden="true"/>
                         </Badge>
                     </Link>
+                </div>                
                 )}
-                </div>
                 <div className="flex space-x-8">
                         {isLoggedIn && (
                           <div className="flex">

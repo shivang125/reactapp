@@ -19,7 +19,10 @@
     width: 80%;
     height: 50px;
 }
-
+.Signinlogin{
+    display: flex;
+  width: max-content;
+}
 .control {
     width: 45px;
     height: 45px;
