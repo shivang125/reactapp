@@ -1,0 +1,135 @@
+.landing__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap-reverse;
+    background-color: #ffe26e;
+    position: relative;
+    margin-top: -30px;
+    width: 100vw;
+    height: 100vh; 
+}
+
+.landing__header__container {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.landing__header {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center; /* Center-align the text */
+}
+
+.landing__header__main {
+    font-size: 4.0rem;
+    font-weight: 800;
+}
+
+.landing__header__discount {
+    font-size: 1.2rem;
+}
+
+.landing__button {
+    width: 60%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.landing__image__container {
+    width: 60%; /* Adjust the width as needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* To position descriptions over the image */
+    transition: "background-image 1s ease-in-out"; /*Add transition*/
+}
+
+.landing__image {
+    max-width: 100%;
+    height: auto; /* Auto-adjust the height */
+    object-fit: cover;
+}
+
+.image-slider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* To position descriptions over the image */
+    max-width: 100%;
+    height: auto; /* Auto-adjust the height */
+}
+
+.button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    margin: 0 20px;
+}
+
+img {
+    max-width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.description {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    font-size: 18px;
+}
+.elementor-33 .elementor-element.elementor-element-720e230 {
+    margin-top: -50px;
+    margin-bottom: 0px;
+  }
+  .elementor-element {
+    --widgets-spacing: 20px 20px;
+  }
+  .elementor-element, .elementor-lightbox {
+    --swiper-theme-color: #000;
+    --swiper-navigation-size: 44px;
+    --swiper-pagination-bullet-size: 6px;
+    --swiper-pagination-bullet-horizontal-gap: 6px;
+  }
+  .elementor-section {
+    position: relative;
+  }
+  .elementor-element {
+    --flex-direction: initial;
+    --flex-wrap: initial;
+    --justify-content: initial;
+    --align-items: initial;
+    --align-content: initial;
+    --gap: initial;
+    --flex-basis: initial;
+    --flex-grow: initial;
+    --flex-shrink: initial;
+    --order: initial;
+    --align-self: initial;
+    flex-basis: var(--flex-basis);
+    flex-grow: var(--flex-grow);
+    flex-shrink: var(--flex-shrink);
+    order: var(--order);
+    align-self: var(--align-self);
+  }
+  .elementor *, .elementor ::after, .elementor ::before {
+    box-sizing: border-box;
+  }
+  article, aside, footer, header, nav, section {
+    display: block;
+  }
