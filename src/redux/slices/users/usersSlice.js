@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import SuccessMsg from "../../../components/SuccessMsg/SuccessMsg";
-const baseURL = "http://localhost:3001";
+const baseURL = "https://shubhamjewelsandperls-7814.onrender.com";
 
 export const addToWishlistAction = createAsyncThunk(
   "user/add-towishlist",
