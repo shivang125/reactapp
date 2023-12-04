@@ -2,17 +2,22 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { IconButton } from '@mui/material';
 import React, { useContext, useState } from 'react';
+import { useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
 import { CartItemsContext } from '../../../Context/CartItemsContext';
 import { WishItemsContext } from '../../../Context/WishItemsContext';
+import { addToWishlistAction } from '../../../redux/slices/users/usersSlice';
 import "./ItemCard.css";
 function ItemCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
   const cartItemsContext = useContext(CartItemsContext);
   const wishItemsContext = useContext(WishItemsContext);
+  const dispatch = useDispatch();
 
   const handleAddToWishList = () => {
     wishItemsContext.addItem(product);
+    dispatch(addToWishlistAction(product.id));
+
   };
 
   const handleAddToCart = () => {

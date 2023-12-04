@@ -3,14 +3,19 @@ import axios from "axios";
 import SuccessMsg from "../../../components/SuccessMsg/SuccessMsg";
 const baseURL = "http://localhost:3001";
 
-
 export const addToWishlistAction = createAsyncThunk(
-  "user/add-to-wishlist",
-  async (itemId, { rejectWithValue, dispatch }) => {
+  "user/add-towishlist",
+  async (itemId, { rejectWithValue,getState, dispatch }) => {
     try {
-      const { data } = await axios.post(`${baseURL}/api/v1/users/add-to-wishlist`, {
+      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await axios.post(`${baseURL}/api/v1/users/wishlist/add-to-wishlist`, {
         itemId,
-      });
+      },config);
 
       return data;
     } catch (error) {
@@ -24,12 +29,9 @@ export const removeFromWishlistAction = createAsyncThunk(
   "user/remove-from-wishlist",
   async (itemId, { rejectWithValue, dispatch }) => {
     try {
-      const { data } = await axios.delete(
-        `${baseURL}/api/v1/users/remove-from-wishlist`,
-        {
-          data: { itemId },
-        }
-      );
+      const { data } = await axios.post(`${baseURL}/api/v1/users/wishlist/remove-from-wishlist`, {
+        productId:itemId,
+      });
 
       return data;
     } catch (error) {
@@ -38,6 +40,31 @@ export const removeFromWishlistAction = createAsyncThunk(
     }
   }
 );
+
+// Frontend API request
+export const getWishlistAction = createAsyncThunk(
+  "user/get-wishlist",
+  async (userId, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const token = getState()?.users?.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await axios.get(
+`${baseURL}/api/v1/users/wishlist/get-wishlist/${userId}`,
+        config
+      );
+      return data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+
 
 export const registerUser = createAsyncThunk(
   "users/register",
@@ -159,6 +186,7 @@ const initialState = {
   error: null,
   user: null,
   profile: {},
+  wishlist: [],
   userAuth: {
     loading: false,
     error: null,
@@ -228,6 +256,17 @@ const userSlice = createSlice({
       .addCase(loginUserAction.rejected, (state, action) => {
         state.userAuth.error = action.payload;
         state.userAuth.loading = false;
+      })
+      .addCase(getWishlistAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getWishlistAction.fulfilled, (state, action) => {
+        state.wishlist = action.payload.wishlist; // Assuming your API response has a 'wishlist' field
+        state.loading = false;
+      })
+      .addCase(getWishlistAction.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading = false;
       })
       ;
   },
