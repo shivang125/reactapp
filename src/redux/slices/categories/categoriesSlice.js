@@ -38,7 +38,7 @@ export const createCategoryAction = createAsyncThunk(
       };
       //Images
       const { data } = await axios.post(
-        `${baseURL}/categories`,
+        `${baseURL}/api/v1/categories`,
         formData,
         config
       );
@@ -54,7 +54,7 @@ export const fetchCategoriesAction = createAsyncThunk(
   "category/fetch All",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { data } = await axios.get(`${baseURL}/categories`);
+      const { data } = await axios.get(`${baseURL}/api/v1/categories`);
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);
@@ -96,11 +96,11 @@ const categorySlice = createSlice({
       state.error = action.payload;
     });
     //Reset err
-    builder.addCase(resetErrAction.pending, (state, action) => {
+    builder.addCase(resetErrAction, (state) => {
       state.error = null;
     });
     //Reset success
-    builder.addCase(resetSuccessAction.pending, (state, action) => {
+    builder.addCase(resetSuccessAction, (state) => {
       state.isAdded = false;
     });
   },

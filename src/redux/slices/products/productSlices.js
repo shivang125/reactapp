@@ -28,9 +28,6 @@ export const createProductAction = createAsyncThunk(
         name,
         description,
         category,
-        sizes,
-        brand,
-        colors,
         price,
         totalQty,
         files,
@@ -48,26 +45,20 @@ export const createProductAction = createAsyncThunk(
       formData.append("description", description);
       formData.append("category", category);
 
-      formData.append("brand", brand);
       formData.append("price", price);
       formData.append("totalQty", totalQty);
 
-      sizes.forEach((size) => {
-        formData.append("sizes", size);
-      });
-      colors.forEach((color) => {
-        formData.append("colors", color);
-      });
 
       files.forEach((file) => {
         formData.append("files", file);
       });
 
       const { data } = await axios.post(
-        `${baseURL}/products`,
+        `${baseURL}/api/v1/products`,
         formData,
         config
       );
+      console.log(data)
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);
@@ -85,9 +76,6 @@ export const updateProductAction = createAsyncThunk(
         name,
         description,
         category,
-        sizes,
-        brand,
-        colors,
         price,
         totalQty,
         id,
@@ -100,14 +88,11 @@ export const updateProductAction = createAsyncThunk(
       };
 
       const { data } = await axios.put(
-        `${baseURL}/products/${id}`,
+        `${baseURL}/api/v1/products/${id}`,
         {
           name,
           description,
           category,
-          sizes,
-          brand,
-          colors,
           price,
           totalQty,
         },
@@ -154,9 +139,10 @@ export const fetchProductAction = createAsyncThunk(
       };
 
       const { data } = await axios.get(
-        `${baseURL}/products/${productId}`,
+        `${baseURL}/api/v1/products/${productId}`,
         config
       );
+      console.log(data)
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);
@@ -171,6 +157,7 @@ const productSlice = createSlice({
     //create
     builder.addCase(createProductAction.pending, (state) => {
       state.loading = true;
+      state.isAdded=false;
     });
     builder.addCase(createProductAction.fulfilled, (state, action) => {
       state.loading = false;
@@ -186,6 +173,7 @@ const productSlice = createSlice({
     //update
     builder.addCase(updateProductAction.pending, (state) => {
       state.loading = true;
+      state.isAdded=false;
     });
     builder.addCase(updateProductAction.fulfilled, (state, action) => {
       state.loading = false;
@@ -201,11 +189,11 @@ const productSlice = createSlice({
     //fetch all
     builder.addCase(fetchProductsAction.pending, (state) => {
       state.loading = true;
+      state.isAdded=false;
     });
     builder.addCase(fetchProductsAction.fulfilled, (state, action) => {
       state.loading = false;
       state.products = action.payload;
-      state.isAdded = true;
     });
     builder.addCase(fetchProductsAction.rejected, (state, action) => {
       state.loading = false;
@@ -229,11 +217,11 @@ const productSlice = createSlice({
       state.error = action.payload;
     });
     //reset error
-    builder.addCase(resetErrAction.pending, (state, action) => {
+    builder.addCase(resetErrAction, (state) => {
       state.error = null;
     });
     //reset success
-    builder.addCase(resetSuccessAction.pending, (state, action) => {
+    builder.addCase(resetSuccessAction, (state) => {
       state.isAdded = false;
     });
   },

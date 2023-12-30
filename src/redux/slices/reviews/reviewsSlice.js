@@ -31,7 +31,7 @@ export const createReviewAction = createAsyncThunk(
       };
       //request
       const { data } = await axios.post(
-        `${baseURL}/reviews/${id}`,
+        `${baseURL}/api/v1/reviews/${id}`,
         {
           rating,
           message,
@@ -67,12 +67,12 @@ const reviewsSlice = createSlice({
     });
 
     //reset error action
-    builder.addCase(resetErrAction.pending, (state, action) => {
+    builder.addCase(resetErrAction, (state) => {
       state.isAdded = false;
       state.error = null;
     });
     //reset success action
-    builder.addCase(resetSuccessAction.pending, (state, action) => {
+    builder.addCase(resetSuccessAction, (state) => {
       state.isAdded = false;
       state.error = null;
     });

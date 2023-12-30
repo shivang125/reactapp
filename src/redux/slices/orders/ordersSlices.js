@@ -33,7 +33,7 @@ export const placeOrderAction = createAsyncThunk(
       };
       //request
       const { data } = await axios.post(
-        `${baseURL}/orders`,
+        `${baseURL}/api/v1/orders`,
         {
           orderItems,
           shippingAddress,
@@ -60,7 +60,7 @@ export const fetchOrdersAction = createAsyncThunk(
         },
       };
 
-      const { data } = await axios.get(`${baseURL}/orders`, config);
+      const { data } = await axios.get(`${baseURL}/api/v1/orders`, config);
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);
@@ -80,7 +80,7 @@ export const OrdersStatsAction = createAsyncThunk(
         },
       };
 
-      const { data } = await axios.get(`${baseURL}/orders/sales/stats`, config);
+      const { data } = await axios.get(`${baseURL}/api/v1/orders/sales/stats`, config);
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);
@@ -211,11 +211,11 @@ const ordersSlice = createSlice({
       state.error = action.payload;
     });
     //reset error
-    builder.addCase(resetErrAction.pending, (state, action) => {
+    builder.addCase(resetErrAction, (state) => {
       state.error = null;
     });
     //reset success
-    builder.addCase(resetSuccessAction.pending, (state, action) => {
+    builder.addCase(resetSuccessAction, (state) => {
       state.isAdded = false;
     });
   },

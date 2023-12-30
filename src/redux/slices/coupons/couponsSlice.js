@@ -211,12 +211,12 @@ const couponsSlice = createSlice({
       state.error = action.payload;
     });
     //reset error action
-    builder.addCase(resetErrAction.pending, (state, action) => {
+    builder.addCase(resetErrAction, (state) => {
       state.isAdded = false;
       state.error = null;
     });
     //reset success action
-    builder.addCase(resetSuccessAction.pending, (state, action) => {
+    builder.addCase(resetSuccessAction, (state) => {
       state.isAdded = false;
       state.error = null;
     });
