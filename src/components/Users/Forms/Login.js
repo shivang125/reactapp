@@ -9,10 +9,9 @@ import './forms.css';
 const Login = () => {
   const dispatch = useDispatch();
   const history = useNavigate();
-
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+const [formData, setFormData] = useState({
+    email: "admin@gmail.com",
+    password: "12345",
   });
 
   const { email, password } = formData;
