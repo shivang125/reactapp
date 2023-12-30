@@ -1,14 +1,31 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { fetchProductsAction } from "../../../redux/slices/products/productSlices";
+import baseURL from "../../../utils/baseURL";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import NoDataFound from "../../NoDataFound/NoDataFound";
 
 export default function ManageStocks() {
-  //Selector
-  let products, loading, error;
-
   //delete product handler
   const deleteProductHandler = (id) => {};
+  let productUrl = `${baseURL}/api/v1/products`;
+  //dispatch
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(
+      fetchProductsAction({
+        url: productUrl,
+      })
+    );
+  }, [dispatch]);
+  //get data from store
+  const {
+    products: { products },
+    loading,
+    error,
+  } = useSelector((state) => state?.products);
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -20,13 +37,6 @@ export default function ManageStocks() {
             List of all the products in your account including their name,
             title,
           </p>
-        </div>
-        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <button
-            type="button"
-            className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
-            Add New Product
-          </button>
         </div>
       </div>
 
@@ -96,16 +106,13 @@ export default function ManageStocks() {
                             <div className="h-10 w-10 flex-shrink-0">
                               <img
                                 className="h-10 w-10 rounded-full"
-                                src={product?.image}
+                                src={product?.images[0]}
                                 alt={product?.name}
                               />
                             </div>
                             <div className="ml-4">
                               <div className="font-medium text-gray-900">
                                 {product.name}
-                              </div>
-                              <div className="text-gray-500">
-                                {product?.brand}
                               </div>
                             </div>
                           </div>
@@ -114,12 +121,9 @@ export default function ManageStocks() {
                           <div className="text-gray-900">
                             {product?.category}
                           </div>
-                          <div className="text-gray-500">
-                            {product.department}
-                          </div>
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {product?.isOutOfStock ? (
+                          {product?.qtyLeft < 0 ? (
                             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                               Out of Stock
                             </span>

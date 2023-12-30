@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import bannerImage1 from "../../assets/bannerImages/banner1.avif";
 import bannerImage2 from "../../assets/bannerImages/bannerImage2.jpg";
 import './Landing.css';
+import ImageUpdateForm from "../Admin/Banner/LandingPageBanner";
 
 const ImageSlider = ({ images, autoSlideInterval }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -41,21 +42,22 @@ const ImageSlider = ({ images, autoSlideInterval }) => {
     );
 }
 
-const images = [
-    {
-        url: bannerImage1,
-        description: "Description for Image 1",
-        textPosition: "right",
-    },
-    {
-        url: bannerImage2,
-        description: "Description for Image 2",
-        textPosition: "left",
-    },
-];
-
 const Landing = () => {
     const [currentDescriptionIndex, setCurrentDescriptionIndex] = useState(0);
+    const [images, setImages] = useState([
+        {
+            id: 1,
+            url: bannerImage1,
+            description: "Description for Image 1",
+            textPosition: "right",
+        },
+        {
+            id: 2,
+            url: bannerImage2,
+            description: "Description for Image 2",
+            textPosition: "left",
+        },
+    ]);
 
     useEffect(() => {
         const slideInterval = setInterval(() => {
@@ -69,7 +71,6 @@ const Landing = () => {
 
     const currentImage = images[currentDescriptionIndex];
     const containerStyle = {
-        
         backgroundImage: `url(${currentImage.url})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -77,53 +78,72 @@ const Landing = () => {
         height: "100vh",
     };
 
+    const handleUpdate = ({ id, imageUrl, description }) => {
+        // Update the images state with the new data
+        const updatedImages = images.map((image) =>
+            image.id === id
+                ? { ...image, url: imageUrl, description: description }
+                : image
+        );
 
-    
+        setImages(updatedImages);
+    };
 
     return (
         <>
-        <div className="landing__container" style={containerStyle}>
-            <div className="landing__header__container">
-                <div className="landing__header">
-                    <h1 className="landing__header__main">
-                        {currentImage.description}
-                    </h1>
-                    <Link to="/shop">
-                        <Button
-                            variant="outlined"
-                            sx={[
-                                {
-                                    width: "190px",
-                                    height: "50px",
-                                    borderRadius: "20px",
-                                    fontWeight: "700",
-                                    backgroundColor: "none",
-                                    borderColor: "black",
-                                    color: "black",
-                                },
-                                {
-                                    "&:hover": {
-                                        backgroundColor: "black",
-                                        color: "#FFE26E",
+            <div className="landing__container" style={containerStyle}>
+                <div className="landing__header__container">
+                    <div className="landing__header">
+                        <h1 className="landing__header__main">
+                            {currentImage.description}
+                        </h1>
+                        <Link to="/shop">
+                            <Button
+                                variant="outlined"
+                                sx={[
+                                    {
+                                        width: "190px",
+                                        height: "50px",
+                                        borderRadius: "20px",
+                                        fontWeight: "700",
+                                        backgroundColor: "none",
                                         borderColor: "black",
+                                        color: "black",
                                     },
-                                },
-                            ]}
-                        >
-                            SHOP NOW
-                        </Button>
-                    </Link>
+                                    {
+                                        "&:hover": {
+                                            backgroundColor: "black",
+                                            color: "#FFE26E",
+                                            borderColor: "black",
+                                        },
+                                    },
+                                ]}
+                            >
+                                SHOP NOW
+                            </Button>
+                        </Link>
+                    </div>
+                </div>
+                <div className="landing__image__container">
+                    <ImageSlider images={images} autoSlideInterval={10000} />
+                </div>
+                <div>
+                    {images.map((image) => (
+                        <div key={image.id}>
+                            <img src={image.url} alt={image.description} />
+                            <p>{image.description}</p>
+                            <ImageUpdateForm
+                                id={image.id}
+                                onUpdate={handleUpdate}
+                                currentImageUrl={image.url}
+                                currentDescription={image.description}
+                            />
+                        </div>
+                    ))}
                 </div>
             </div>
-            <div className="landing__image__container">
-                <ImageSlider images={images} autoSlideInterval={10000} />
-            </div>
-        </div>
-        
-        
-      </>
+        </>
     );
 };
 
 export default Landing;
-

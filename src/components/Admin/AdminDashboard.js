@@ -1,13 +1,26 @@
-import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useState,useEffect  } from "react";
+import { Dialog, Menu, Transition } from "@headlessui/react";
+import { Link, Outlet,useLocation } from "react-router-dom";
+import { uploadImage } from './Banner/uploadAxios';
+import {getAllImages} from './Banner/retrieveAxios';
 import {
   Bars3CenterLeftIcon,
+  BellIcon,
+  ClockIcon,
   CogIcon,
+  CreditCardIcon,
+  DocumentChartBarIcon,
+  HomeIcon,
   QuestionMarkCircleIcon,
   ScaleIcon,
-  XMarkIcon
+  ShieldCheckIcon,
+  UserGroupIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { Fragment, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import logo from "../Navbar/logo.png";
+import ImageUpdateForm  from '../Admin/Banner/LandingPageBanner'
+
+
 const ordersLinks = [
   {
     name: "Dashboard",
@@ -19,7 +32,8 @@ const ordersLinks = [
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6 m-1">
+        className="w-6 h-6 m-1"
+      >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -28,25 +42,6 @@ const ordersLinks = [
       </svg>
     ),
     current: true,
-  },
-  {
-    name: "Manage Orders",
-    href: "manage-orders",
-    icon: () => (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="w-6 h-6 m-1">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    ),
   },
   {
     name: "Customers",
@@ -58,7 +53,8 @@ const ordersLinks = [
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6 m-1">
+        className="w-6 h-6 m-1"
+      >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -80,7 +76,8 @@ const productsLinks = [
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6 m-1">
+        className="w-6 h-6 m-1"
+      >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -110,7 +107,8 @@ const couponsLinks = [
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6 m-1">
+        className="w-6 h-6 m-1"
+      >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -120,7 +118,7 @@ const couponsLinks = [
     ),
   },
   {
-    name: "Manage Coupon",
+    name: "Manage Coupons",
     href: "manage-coupon",
     icon: () => (
       <svg
@@ -129,7 +127,8 @@ const couponsLinks = [
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6 m-1">
+        className="w-6 h-6 m-1"
+      >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -144,35 +143,50 @@ function classNames(...classes) {
 }
 
 const CategoryLinks = [
-  { name: "Add Category", href: "category-to-add", icon: CogIcon },
+  { name: "Add Category", href: "add-category", icon: CogIcon },
   {
-    name: "Manage Category",
+    name: "All Categories",
     href: "manage-category",
     icon: QuestionMarkCircleIcon,
   },
 ];
-
-const colorsLinks = [
-  { name: "Add New Color", href: "add-color", icon: CogIcon },
-  {
-    name: "All Colors",
-    href: "all-colors",
-    icon: QuestionMarkCircleIcon,
-  },
-];
-
-const brandsLinks = [
-  { name: "Add New Brand", href: "add-brand", icon: CogIcon },
-  {
-    name: "All Brands",
-    href: "all-brands",
-    icon: QuestionMarkCircleIcon,
-  },
-];
-
-export default function Example() {
+export default function AddminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const [images, setImages] = useState([]);
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith("/admin");
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const imagesData = await getAllImages();
+        setImages(imagesData);
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      }
+    };
+  
+    fetchImages();
+  }, []);
+  const handleUpdate = async ({ id, imageData, description }) => {
+    try {
+      // Upload the image and get the response
+      const formData = new FormData();
+      formData.append('image', imageData); // Append the image data directly
+      formData.append('description', description);
+  
+      await uploadImage(formData);
+  
+      // Update the state with the new image data
+      const updatedImages = images.map((image) =>
+        image.id === id ? { ...image, imageData, description: description } : image
+      );
+  
+      setImages(updatedImages);
+    } catch (error) {
+      console.error('Error updating image:', error);
+    }
+  };
+  
   return (
     <>
       <div className="min-h-full">
@@ -180,7 +194,8 @@ export default function Example() {
           <Dialog
             as="div"
             className="relative z-40 lg:hidden"
-            onClose={setSidebarOpen}>
+            onClose={setSidebarOpen}
+          >
             <Transition.Child
               as={Fragment}
               enter="transition-opacity ease-linear duration-300"
@@ -188,7 +203,8 @@ export default function Example() {
               enterTo="opacity-100"
               leave="transition-opacity ease-linear duration-300"
               leaveFrom="opacity-100"
-              leaveTo="opacity-0">
+              leaveTo="opacity-0"
+            >
               <div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
             </Transition.Child>
 
@@ -200,7 +216,8 @@ export default function Example() {
                 enterTo="translate-x-0"
                 leave="transition ease-in-out duration-300 transform"
                 leaveFrom="translate-x-0"
-                leaveTo="-translate-x-full">
+                leaveTo="-translate-x-full"
+              >
                 <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-cyan-700 pt-5 pb-4">
                   <Transition.Child
                     as={Fragment}
@@ -209,12 +226,14 @@ export default function Example() {
                     enterTo="opacity-100"
                     leave="ease-in-out duration-300"
                     leaveFrom="opacity-100"
-                    leaveTo="opacity-0">
+                    leaveTo="opacity-0"
+                  >
                     <div className="absolute top-0 right-0 -mr-12 pt-2">
                       <button
                         type="button"
                         className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                        onClick={() => setSidebarOpen(false)}>
+                        onClick={() => setSidebarOpen(false)}
+                      >
                         <span className="sr-only">Close sidebar</span>
                         <XMarkIcon
                           className="h-6 w-6 text-white"
@@ -226,7 +245,8 @@ export default function Example() {
                   <div className="flex flex-shrink-0 items-center px-4"></div>
                   <nav
                     className="mt-5 flex flex-1 flex-col divide-y divide-cyan-800 overflow-y-auto"
-                    aria-label="Sidebar">
+                    aria-label="Sidebar"
+                  >
                     {/* orders links mobile */}
                     <div className="mt-1 pt-1">
                       <div className="space-y-1 px-2">
@@ -234,7 +254,8 @@ export default function Example() {
                           <Link
                             key={item.name}
                             to={item.href}
-                            className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
+                            className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white"
+                          >
                             <item.icon
                               className="mr-4 h-6 w-6 text-cyan-200"
                               aria-hidden="true"
@@ -256,7 +277,8 @@ export default function Example() {
                               : "text-cyan-100 hover:text-white hover:bg-cyan-600",
                             "group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
                           )}
-                          aria-current={item.current ? "page" : undefined}>
+                          aria-current={item.current ? "page" : undefined}
+                        >
                           <item.icon
                             className="mr-4 h-6 w-6 flex-shrink-0 text-cyan-200"
                             aria-hidden="true"
@@ -271,7 +293,8 @@ export default function Example() {
                           <Link
                             key={item.name}
                             to={item.href}
-                            className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
+                            className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white"
+                          >
                             <item.icon
                               className="mr-4 h-6 w-6 text-cyan-200"
                               aria-hidden="true"
@@ -288,41 +311,8 @@ export default function Example() {
                           <Link
                             key={item.name}
                             to={item.href}
-                            className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
-                            <item.icon
-                              className="mr-4 h-6 w-6 text-cyan-200"
-                              aria-hidden="true"
-                            />
-                            {item.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                    {/* colors links mobile */}
-                    <div className="mt-3 pt-3">
-                      <div className="space-y-1 px-2">
-                        {colorsLinks.map((item) => (
-                          <Link
-                            key={item.name}
-                            to={item.href}
-                            className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
-                            <item.icon
-                              className="mr-4 h-6 w-6 text-cyan-200"
-                              aria-hidden="true"
-                            />
-                            {item.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                    {/* brands links mobile */}
-                    <div className="mt-3 pt-3">
-                      <div className="space-y-1 px-2">
-                        {brandsLinks.map((item) => (
-                          <Link
-                            key={item.name}
-                            to={item.href}
-                            className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
+                            className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white"
+                          >
                             <item.icon
                               className="mr-4 h-6 w-6 text-cyan-200"
                               aria-hidden="true"
@@ -344,12 +334,8 @@ export default function Example() {
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-        <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
-          {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex flex-grow flex-col overflow-y-auto bg-cyan-900 pt-5 pb-4">
-            <nav
-              className="mt-5 flex flex-1 flex-col divide-y divide-cyan-800 overflow-y-auto"
-              aria-label="Sidebar">
+      <div className="bg-gray-100 border-b border-gray-200 p-4">
+      <nav className="flex space-x-12">
               {/* orders links desktop */}
               <div className="mt-1 pt-1">
                 <div className="space-y-1 px-2">
@@ -357,9 +343,10 @@ export default function Example() {
                     <Link
                       key={item.name}
                       to={item.href}
-                      className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
+                      className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-black hover:bg-cyan-600 hover:text-white"
+                    >
                       <item.icon
-                        className="mr-4 h-6 w-6 text-cyan-200"
+                        className="mr-4 h-6 w-6 text-black"
                         aria-hidden="true"
                       />
                       {item.name}
@@ -367,7 +354,8 @@ export default function Example() {
                   ))}
                 </div>
               </div>
-              <div className="space-y-1 px-2 mt-8">
+              <div className="mt-1 pt-1">
+                <div className="space-y-1 px-2">
                 {/*Products  links desktop */}
                 {productsLinks.map((item) => (
                   <Link
@@ -375,28 +363,30 @@ export default function Example() {
                     to={item.href}
                     className={classNames(
                       item.current
-                        ? "bg-cyan-800 text-white"
-                        : "text-cyan-100 hover:text-white hover:bg-cyan-600",
-                      "group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
+                        ? "bg-black text-white"
+                        : "group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-black hover:bg-cyan-600 hover:text-white"
                     )}
-                    aria-current={item.current ? "page" : undefined}>
+                    aria-current={item.current ? "page" : undefined}
+                  >
                     <item.icon
-                      className="mr-4 h-6 w-6 flex-shrink-0 text-cyan-200"
+                      className="mr-4 h-6 w-6 flex-shrink-0 text-black"
                       aria-hidden="true"
                     />
                     {item.name}
                   </Link>
                 ))}
               </div>
-              <div className="mt-6 pt-6">
+              </div>
+              <div className="mt-1 pt-1">
                 <div className="space-y-1 px-2">
                   {couponsLinks.map((item) => (
                     <Link
                       key={item.name}
                       to={item.href}
-                      className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
+                      className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-black hover:bg-cyan-600 hover:text-white"
+                    >
                       <item.icon
-                        className="mr-4 h-6 w-6 text-cyan-200"
+                        className="mr-4 h-6 w-6 text-black"
                         aria-hidden="true"
                       />
                       {item.name}
@@ -405,66 +395,48 @@ export default function Example() {
                 </div>
               </div>
               {/* Categories desktop */}
-              <div className="mt-3 pt-3">
+              {/* <div className="mt-1 pt-1">
                 <div className="space-y-1 px-2">
                   {CategoryLinks.map((item) => (
                     <Link
                       key={item.name}
                       to={item.href}
-                      className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
+                      className="text-black hover:bg-cyan-600 hover:text-white"
+                    >
                       <item.icon
-                        className="mr-4 h-6 w-6 text-cyan-200"
+                        className="mr-4 h-6 w-6 text-black"
                         aria-hidden="true"
                       />
                       {item.name}
                     </Link>
                   ))}
                 </div>
+              </div> */}
+              <div>
+            {images.map((image) => (
+              <div key={image.id}>
+                <img src={image.imageData} alt={image.description} />
+                <p>{image.description}</p>
+                {/* Include ImageUpdateForm component for each image */}
+                <ImageUpdateForm
+                  id={image.id}
+                  onUpdate={(data) => handleUpdate({ id: image.id, ...data })}
+                  currentImageData={image.imageData}
+                  currentDescription={image.description}
+                />  
               </div>
-              {/* colors links desktop */}
-              <div className="mt-3 pt-3">
-                <div className="space-y-1 px-2">
-                  {colorsLinks.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
-                      <item.icon
-                        className="mr-4 h-6 w-6 text-cyan-200"
-                        aria-hidden="true"
-                      />
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-              {/* brands links desktop */}
-              <div className="mt-3 pt-3">
-                <div className="space-y-1 px-2">
-                  {brandsLinks.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white">
-                      <item.icon
-                        className="mr-4 h-6 w-6 text-cyan-200"
-                        aria-hidden="true"
-                      />
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+            ))}
+          </div>
             </nav>
           </div>
         </div>
 
         <div className="flex flex-1 flex-col lg:pl-64">
-          <div className="flex h-16 flex-shrink-0 border-b border-gray-200 bg-white lg:border-none">
             <button
               type="button"
               className="border-r border-gray-200 px-4 text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-500 lg:hidden"
-              onClick={() => setSidebarOpen(true)}>
+              onClick={() => setSidebarOpen(true)}
+            >
               <span className="sr-only">Open sidebar</span>
               <Bars3CenterLeftIcon className="h-6 w-6" aria-hidden="true" />
             </button>
@@ -472,100 +444,10 @@ export default function Example() {
           <main className="flex-1 pb-8">
             {/* Page header */}
             <div className="bg-white shadow">
-              <div className="px-4 sm:px-6 lg:mx-auto lg:max-w-6xl lg:px-8">
-                <div className="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
-                  <div className="min-w-0 flex-1">
-                    {/* Profile */}
-                    <div className="flex items-center">
-                      <img
-                        className="hidden h-16 w-16 rounded-full sm:block"
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80"
-                        alt=""
-                      />
-                      <div>
-                        <div className="flex items-center">
-                          <img
-                            className="h-16 w-16 rounded-full sm:hidden"
-                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80"
-                            alt=""
-                          />
-                          <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:leading-9">
-                            Good morning, Emilia Birch
-                          </h1>
-                        </div>
-                        <dl className="mt-6 flex flex-col sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
-                          <dd className="flex items-center text-sm font-medium capitalize text-gray-500 sm:mr-6">
-                            {/* Role */}
-                            <svg
-                              class="w-6 h-6"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg">
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                            </svg>
-                            Role: Admin
-                          </dd>
-                          {/* Date Joined */}
-                          <dd className="mt-3 flex items-center text-sm font-medium capitalize text-gray-500 sm:mr-6 sm:mt-0">
-                            <svg
-                              className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg">
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            Date Joined: 12/12/2020
-                          </dd>
-                          {/* email */}
-                          <dd className="mt-3 flex items-center text-sm font-medium  text-gray-500 sm:mr-6 sm:mt-0">
-                            <svg
-                              className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg">
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
-                            </svg>
-                            admin@gmail.com
-                          </dd>
-                        </dl>
-                      </div>
-                    </div>
-                  </div>
-                  {/* <div className="mt-6 flex space-x-3 md:mt-0 md:ml-4">
-                    <button
-                      type="button"
-                      className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2">
-                      Add money
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex items-center rounded-md border border-transparent bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2">
-                      Send money
-                    </button>
-                  </div> */}
-                </div>
-              </div>
             </div>
             <Outlet />
             {/* content */}
           </main>
-        </div>
-      </div>
     </>
   );
 }

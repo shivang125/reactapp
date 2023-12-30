@@ -49,7 +49,17 @@ const Control = () => {
                     </>
                 </div>)}
                 {isLoggedIn && (<div className="control">
-                
+                {user?.userFound?.isAdmin && (
+                      <Link
+                        to="/admin"
+                        className="border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700"
+                        style={{ marginLeft: '-50px' }}
+                      >
+                        Admin Dashboard
+                      </Link>
+                    )}
+                    </div>)}
+                {isLoggedIn && user?.userFound?.isAdmin==false && (<div className="control">
                     <Link to="/wishlist">
                         <Badge badgeContent={wishItems.items.length} color="error">
                             <FavoriteBorderIcon color="black" sx={{ width: '35px'}}/>
@@ -58,7 +68,7 @@ const Control = () => {
                 
                 </div>
                 )}
-                {isLoggedIn && (
+                {isLoggedIn && user?.userFound?.isAdmin==false && (
                 <div className="control">
                     <Link to="/cart" className="group -m-2 flex items-center p-2">
                         <Badge badgeContent={cartItems.items.length} color="error">
