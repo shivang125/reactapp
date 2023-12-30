@@ -6,15 +6,18 @@ import Stripe from "stripe";
 import dbConnect from "../config/dbConnect.js";
 import { globalErrhandler, notFound } from "../middlewares/globalErrHandler.js";
 import Order from "../model/Order.js";
-import brandsRouter from "../routes/brandsRouter.js";
 import categoriesRouter from "../routes/categoriesRouter.js";
-import colorRouter from "../routes/colorRouter.js";
-import couponsRouter from "../routes/couponsRouter.js";
 import orderRouter from "../routes/ordersRouter.js";
 import productsRouter from "../routes/productsRoute.js";
 import reviewRouter from "../routes/reviewRouter.js";
 import userRoutes from "../routes/usersRoute.js";
+import mongoose from "mongoose";
+import imageRoutes from "../routes/imageRouter.js";
 dotenv.config();
+mongoose.connect(process.env.DB_CONNECTION_STRING, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 //db connect
 dbConnect();
@@ -100,11 +103,10 @@ app.get("/", (req, res) => {
 app.use("/api/v1/users/", userRoutes);
 app.use("/api/v1/products/", productsRouter);
 app.use("/api/v1/categories/", categoriesRouter);
-app.use("/api/v1/brands/", brandsRouter);
-app.use("/api/v1/colors/", colorRouter);
 app.use("/api/v1/reviews/", reviewRouter);
 app.use("/api/v1/orders/", orderRouter);
-app.use("/api/v1/coupons/", couponsRouter);
+app.use("/api", imageRoutes);
+
 //err middleware
 app.use(notFound);
 app.use(globalErrhandler);

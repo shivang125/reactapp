@@ -1,5 +1,4 @@
 import asyncHandler from "express-async-handler";
-import Brand from "../model/Brand.js";
 import Category from "../model/Category.js";
 import Product from "../model/Product.js";
 
@@ -17,15 +16,6 @@ export const createProductCtrl = asyncHandler(async (req, res) => {
     throw new Error("Product Already Exists");
   }
   //find the brand
-  const brandFound = await Brand.findOne({
-    name: "addidas",
-  });
-
-  if (!brandFound) {
-    throw new Error(
-      "Brand not found, please create brand first or check brand name"
-    );
-  }
   //find the category
   const categoryFound = await Category.findOne({
     name: category,
@@ -40,12 +30,9 @@ export const createProductCtrl = asyncHandler(async (req, res) => {
     name,
     description,
     category,
-    sizes,
-    colors,
     user: req.userAuthId,
     price,
     totalQty,
-    brand,
     images: convertedImgs,
   });
   //push the product into category
@@ -94,19 +81,6 @@ export const getProductsCtrl = asyncHandler(async (req, res) => {
     });
   }
 
-  //filter by color
-  if (req.query.color) {
-    productQuery = productQuery.find({
-      colors: { $regex: req.query.color, $options: "i" },
-    });
-  }
-
-  //filter by size
-  if (req.query.size) {
-    productQuery = productQuery.find({
-      sizes: { $regex: req.query.size, $options: "i" },
-    });
-  }
   //filter by price range
   if (req.query.price) {
     const priceRange = req.query.price.split("-");
@@ -188,12 +162,9 @@ export const updateProductCtrl = asyncHandler(async (req, res) => {
     name,
     description,
     category,
-    sizes,
-    colors,
     user,
     price,
     totalQty,
-    brand,
   } = req.body;
   //validation
 
@@ -204,12 +175,9 @@ export const updateProductCtrl = asyncHandler(async (req, res) => {
       name,
       description,
       category,
-      sizes,
-      colors,
       user,
       price,
       totalQty,
-      brand,
     },
     {
       new: true,
